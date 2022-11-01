@@ -135,12 +135,13 @@ fn find_git(path: &Path) -> Option<PathBuf> {
 
 fn get_last_modification(git_dir: &Path, path: &Path) -> Result<(String, String), String> {
     let sh = Shell::new().unwrap();
-    let mtime = cmd!(
+    let cmd = cmd!(
         sh,
-        "git --no-pager --git-dir {git_dir}/.git log -1 --pretty='format:%cs %h' {path}"
-    )
-    .read()
-    .unwrap();
+        "git --no-pager --git-dir {git_dir}/.git --work-tree {git_dir} log -1 --pretty='format:%cs %h' {path}"
+    );
+    log::trace!("Running command: {cmd:?}");
+
+    let mtime = cmd.read().unwrap();
 
     match mtime.split_once(' ') {
         Some((date, commit)) => Ok((date.to_string(), commit.to_string())),
