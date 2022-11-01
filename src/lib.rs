@@ -21,7 +21,10 @@ impl Preprocessor for LastChanged {
         log::debug!("Git root: {}", git_root.display());
 
         let repository_url = match ctx.config.get("output.html.git-repository-url") {
-            None => return Ok(book),
+            None => {
+                log::error!("mdbook-last-changed was called, but no `output.html.git-repository-url` configured. Book is left unchanged.");
+                return Ok(book);
+            }
             Some(url) => url,
         };
         let repository_url = match repository_url {
