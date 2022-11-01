@@ -19,6 +19,8 @@ jobs:
         with:
           mdbook-version: 'latest'
 
+      - uses: Swatinem/rust-cache@v1
+
       - run: |
           cd book
           mdbook build
