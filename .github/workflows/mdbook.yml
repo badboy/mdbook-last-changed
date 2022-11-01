@@ -19,7 +19,7 @@ jobs:
         with:
           mdbook-version: 'latest'
 
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
 
       - run: |
           cd book
