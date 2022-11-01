@@ -1,0 +1,9 @@
+[book]
+title = "mdbook-last-changed"
+
+[output.html]
+git-repository-url = "https://github.com/badboy/mdbook-last-changed"
+additional-css = ["footer.css"]
+
+[preprocessor.last-changed]
+command = "cargo run --manifest-path ../Cargo.toml"

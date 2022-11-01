@@ -23,7 +23,7 @@ cargo install mdbook-last-changed
 
 Add it as a preprocessor to your `book.toml`:
 
-```
+```toml
 [preprocessor.last-changed]
 command = "mdbook-last-changed"
 renderer = ["html"]
@@ -71,4 +71,4 @@ mdbook path/to/book
 ## License
 
 MPL. See [LICENSE](LICENSE).  
-Copyright (c) 2020-2022 Jan-Erik Rediger <janerik@fnordig.de>
+Copyright (c) 2022 Jan-Erik Rediger <janerik@fnordig.de>
