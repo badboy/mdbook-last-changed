@@ -29,17 +29,22 @@ impl Preprocessor for LastChanged {
         };
         let repository_url = match repository_url {
             toml::Value::String(s) => s,
-            _ => return Ok(book),
+            _ => {
+                log::trace!("git-repository-url is not a string: {repository_url:?}");
+                return Ok(book);
+            }
         };
         log::debug!("Repository URL: {}", repository_url);
 
         if !repository_url.contains("github.com") {
+            log::trace!("git-repository-url is not a GitHub URL: {repository_url:?}");
             return Ok(book);
         }
 
         let mut res = None;
         book.for_each_mut(|item: &mut BookItem| {
             if let Some(Err(_)) = res {
+                log::trace!("Error when changing the book. Last result: {res:?}");
                 return;
             }
 
@@ -66,16 +71,23 @@ fn last_changed(
 
     let footer_start = "<footer id=\"last-change\">";
     if content.contains(footer_start) {
+        log::trace!("Book already contains a last-change footer. Bailing out.");
         return Ok(content.into());
     }
 
     let path = match chapter.path.as_ref() {
-        None => return Ok("".into()),
+        None => {
+            log::trace!("Chapter has no path. Chapter: {chapter:?}");
+            return Ok(content.into());
+        }
         Some(path) => path,
     };
     let path = match src_root.join(&path).canonicalize() {
         Ok(path) => path,
-        Err(_) => return Ok(content.into()),
+        Err(_) => {
+            log::trace!("Cannot canonicalize path: {path:?}");
+            return Ok(content.into());
+        }
     };
     log::trace!("Chapter path: {}", path.display());
 
@@ -88,10 +100,14 @@ fn last_changed(
                 date, url, commit
             )
         }
-        Err(_) => return Ok(content.into()),
+        Err(e) => {
+            log::trace!("No modification found for {path:?}. Error: {e:?}");
+            return Ok(content.into());
+        }
     };
 
     let content = format!("{}\n{}{}</footer>", content, footer_start, text);
+    log::trace!("Adding footer: {text:?}");
 
     Ok(content)
 }
