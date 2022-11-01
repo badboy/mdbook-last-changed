@@ -7,6 +7,12 @@ A preprocessor for [mdbook][] to add a page's last change date and a link to the
 It adds a "Last change" footer, including a date and a link to the corresponding commit.
 It uses the configured `git-repository-url` as the base.
 
+## Requirements
+
+* The `git` command line tool.
+* A configured git repository url in your `book.toml` configuration. See [Configuration](#configuration).
+* Access to the git repository checkout while building your book.
+
 ## Installation
 
 If you want to use only this preprocessor, install the tool:
