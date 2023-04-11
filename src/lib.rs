@@ -15,7 +15,8 @@ impl Preprocessor for LastChanged {
     fn run(&self, ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
         let book_root = &ctx.root;
         let src_root = book_root.join(&ctx.config.book.src);
-        let git_root = find_git(book_root).unwrap();
+        let git_root = find_git(book_root)
+            .expect("Couldn't find the root of this project. Not a git repository?");
         log::debug!("Book root: {}", book_root.display());
         log::debug!("Src root: {}", src_root.display());
         log::debug!("Git root: {}", git_root.display());
