@@ -33,6 +33,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -70,10 +71,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -151,7 +154,7 @@
 <li>A configured git repository url in your <code>book.toml</code> configuration. See <a href="#configuration">Configuration</a>.</li>
 <li>Access to the git repository checkout while building your book.</li>
 </ul>
-<footer id="last-change">Last change: 2022-12-18, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/959d514">959d514</a></footer>
+<footer id="last-change">Last change: 2023-04-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/9660612">9660612</a></footer>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -200,5 +203,6 @@
         <!-- Custom JS scripts -->
 
 
+    </div>
     </body>
 </html>
