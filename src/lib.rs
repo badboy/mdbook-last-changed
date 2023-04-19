@@ -15,11 +15,11 @@ impl Preprocessor for LastChanged {
     fn run(&self, ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
         let book_root = &ctx.root;
         let src_root = book_root.join(&ctx.config.book.src);
-        let git_root = find_git(book_root)
+        let repo_root = find_repo(book_root)
             .expect("Couldn't find the root of this project. Not a git repository?");
         log::debug!("Book root: {}", book_root.display());
         log::debug!("Src root: {}", src_root.display());
-        log::debug!("Git root: {}", git_root.display());
+        log::debug!("Git root: {}", repo_root.display());
 
         let repository_url = match ctx.config.get("output.html.git-repository-url") {
             None => {
@@ -51,8 +51,11 @@ impl Preprocessor for LastChanged {
 
             if let BookItem::Chapter(ref mut chapter) = *item {
                 res = Some(
-                    last_changed(&git_root, &src_root, repository_url, chapter).map(|md| {
+                    last_changed(&repo_root, &src_root, repository_url, chapter).map(|md| {
                         chapter.content = md;
+
+
+
                     }),
                 );
             }
@@ -63,7 +66,7 @@ impl Preprocessor for LastChanged {
 }
 
 fn last_changed(
-    git_root: &Path,
+    repo_root: &Path,
     src_root: &Path,
     base_url: &str,
     chapter: &mut Chapter,
@@ -92,7 +95,7 @@ fn last_changed(
     };
     log::trace!("Chapter path: {}", path.display());
 
-    let modification = get_last_modification(git_root, &path);
+    let modification = get_last_modification(repo_root, &path);
     let text = match modification {
         Ok((date, commit)) => {
             let url = format!("{}/commit/{}", base_url, commit);
@@ -113,33 +116,48 @@ fn last_changed(
     Ok(content)
 }
 
-fn find_git(path: &Path) -> Option<PathBuf> {
+fn find_repo(path: &Path) -> Option<PathBuf> {
     let mut current_path = path;
-    let mut git_dir = current_path.join(".git");
+    let mut repo_dirs = vec! [current_path.join(".git"), current_path.join(".sl")];
     let root = Path::new("/");
 
-    while !git_dir.exists() {
-        current_path = match current_path.parent() {
-            Some(p) => p,
-            None => return None,
-        };
+    for repo_dir in &mut repo_dirs {
+        while !repo_dir.exists() {
+            current_path = match current_path.parent() {
+                Some(p) => p,
+                None => return None,
+            };
 
-        if current_path == root {
-            return None;
+            if current_path == root {
+                return None;
+            }
         }
 
-        git_dir = current_path.join(".git");
+        if repo_dir.ends_with(".git") {
+            repo_dir = current_path.join(".git");
+            break;
+        }
+
+        repo_dir = current_path.join(".sl");
     }
 
-    git_dir.parent().map(|p| p.to_owned())
+    repo_dir.parent().map(|p| p.to_owned())
 }
 
-fn get_last_modification(git_dir: &Path, path: &Path) -> Result<(String, String), String> {
+fn get_last_modification(repo_dir: &Path, path: &Path) -> Result<(String, String), String> {
     let sh = Shell::new().unwrap();
-    let cmd = cmd!(
-        sh,
-        "git --no-pager --git-dir {git_dir}/.git --work-tree {git_dir} log -1 --pretty='format:%cs %h' {path}"
-    );
+
+    if repo_dir.join(".git").exists()
+        let cmd = cmd!(
+            sh,
+            "git --no-pager --git-dir {repo_dir}/.git --work-tree {repo_dir} log -1 --pretty='format:%cs %h' {path}"
+        );
+    else
+        let cmd = cmd!(
+            sh,
+            "sl log --repository {repo_dir} -l1 -T '{date|shortdate} {node}' {path}"
+        );
+
     log::trace!("Running command: {cmd:?}");
 
     let mtime = cmd.read().unwrap();
