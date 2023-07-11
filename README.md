@@ -10,7 +10,6 @@ It uses the configured `git-repository-url` as the base.
 ## Requirements
 
 * The `git` command line tool.
-* A configured git repository url in your `book.toml` configuration. See [Configuration](#configuration).
 * Access to the git repository checkout while building your book.
 
 ## Installation
@@ -36,8 +35,20 @@ renderer = ["html"]
 
 ```toml
 [output.html]
-# Required: Your repository URL used in the link.
+# Optional: Your repository URL used in the link.
 git-repository-url = "https://github.com/$user/$project"
+```
+
+If `git-repository-url` is not configured the footer will not contain the commit and a link to it and instead only show the last changed date.
+
+Without `git-repository-url` configured:
+```HTML
+<footer id="last-change">Last change: 2023-07-09</footer>
+```
+
+With `git-repository-url` configured:
+```HTML
+<footer id="last-change">Last change: 2023-07-09, commit: <a href="https://github.com/$user/$project/commit/$commit">0000000</a></footer>
 ```
 
 To style the footer add a custom CSS file for your HTML output:

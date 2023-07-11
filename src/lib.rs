@@ -21,26 +21,27 @@ impl Preprocessor for LastChanged {
         log::debug!("Src root: {}", src_root.display());
         log::debug!("Git root: {}", git_root.display());
 
-        let repository_url = match ctx.config.get("output.html.git-repository-url") {
-            None => {
-                log::error!("mdbook-last-changed was called, but no `output.html.git-repository-url` configured. Book is left unchanged.");
-                return Ok(book);
-            }
-            Some(url) => url,
-        };
-        let repository_url = match repository_url {
-            toml::Value::String(s) => s,
-            _ => {
-                log::trace!("git-repository-url is not a string: {repository_url:?}");
-                return Ok(book);
-            }
-        };
-        log::debug!("Repository URL: {}", repository_url);
+        let repository_string: Option<&str> = match ctx.config.get("output.html.git-repository-url")
+        {
+            Some(val) => {
+                let url = match val {
+                    toml::Value::String(s) => s,
+                    _ => {
+                        log::trace!("git-repository-url is not a string: {val:?}");
+                        return Ok(book);
+                    }
+                };
+                log::debug!("Repository URL: {}", url);
 
-        if !repository_url.contains("github.com") {
-            log::trace!("git-repository-url is not a GitHub URL: {repository_url:?}");
-            return Ok(book);
-        }
+                if !url.contains("github.com") {
+                    log::trace!("git-repository-url is not a GitHub URL: {url:?}");
+                    return Ok(book);
+                }
+
+                Some(&url)
+            }
+            None => None,
+        };
 
         let mut res = None;
         book.for_each_mut(|item: &mut BookItem| {
@@ -51,7 +52,7 @@ impl Preprocessor for LastChanged {
 
             if let BookItem::Chapter(ref mut chapter) = *item {
                 res = Some(
-                    last_changed(&git_root, &src_root, repository_url, chapter).map(|md| {
+                    last_changed(&git_root, &src_root, repository_string, chapter).map(|md| {
                         chapter.content = md;
                     }),
                 );
@@ -65,7 +66,7 @@ impl Preprocessor for LastChanged {
 fn last_changed(
     git_root: &Path,
     src_root: &Path,
-    base_url: &str,
+    base_url: Option<&str>,
     chapter: &mut Chapter,
 ) -> Result<String> {
     let content = &chapter.content;
@@ -94,13 +95,18 @@ fn last_changed(
 
     let modification = get_last_modification(git_root, &path);
     let text = match modification {
-        Ok((date, commit)) => {
-            let url = format!("{}/commit/{}", base_url, commit);
-            format!(
-                "Last change: {}, commit: <a href=\"{}\">{}</a>",
-                date, url, commit
-            )
-        }
+        Ok((date, commit)) => match base_url {
+            Some(url) => {
+                let url = format!("{}/commit/{}", url, commit);
+                format!(
+                    "Last change: {}, commit: <a href=\"{}\">{}</a>",
+                    date, url, commit
+                )
+            }
+            None => {
+                format!("Last change: {}", date)
+            }
+        },
         Err(e) => {
             log::trace!("No modification found for {path:?}. Error: {e:?}");
             return Ok(content.into());
