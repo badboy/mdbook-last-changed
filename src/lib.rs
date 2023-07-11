@@ -21,7 +21,8 @@ impl Preprocessor for LastChanged {
         log::debug!("Src root: {}", src_root.display());
         log::debug!("Git root: {}", git_root.display());
 
-        let repository_string: Option<&str> = match ctx.config.get("output.html.git-repository-url") {
+        let repository_string: Option<&str> = match ctx.config.get("output.html.git-repository-url")
+        {
             Some(val) => {
                 let url = match val {
                     toml::Value::String(s) => s,
