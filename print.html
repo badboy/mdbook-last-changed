@@ -90,11 +90,33 @@
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
                                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
@@ -159,7 +181,7 @@ It uses the configured <code>git-repository-url</code> as the base.</p>
 <li>A configured git repository url in your <code>book.toml</code> configuration. See <a href="requirements.html#configuration">Configuration</a>.</li>
 <li>Access to the git repository checkout while building your book.</li>
 </ul>
-<footer id="last-change">Last change: 2023-04-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/9660612">9660612</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<footer id="last-change">Last change: 2023-07-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/bc6e40e">bc6e40e</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>If you want to use only this preprocessor, install the tool:</p>
 <pre><code>cargo install mdbook-last-changed
 </code></pre>
@@ -168,7 +190,7 @@ It uses the configured <code>git-repository-url</code> as the base.</p>
 command = &quot;mdbook-last-changed&quot;
 renderer = [&quot;html&quot;]
 </code></pre>
-<footer id="last-change">Last change: 2023-04-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/9660612">9660612</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
+<footer id="last-change">Last change: 2023-07-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/bc6e40e">bc6e40e</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
 <p><code>mdbook-last-changed</code> is configured using additional options under <code>[output.html]</code>:</p>
 <pre><code class="language-toml">[output.html]
 # Required: Your repository URL used in the link.
@@ -191,10 +213,10 @@ and adds a small horizontal bar above the text to separate it from the page cont
 <p>Finally, build your book as normal:</p>
 <pre><code>mdbook path/to/book
 </code></pre>
-<footer id="last-change">Last change: 2023-04-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/9660612">9660612</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="license"><a class="header" href="#license">License</a></h1>
+<footer id="last-change">Last change: 2023-07-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/bc6e40e">bc6e40e</a></footer><div style="break-before: page; page-break-before: always;"></div><h1 id="license"><a class="header" href="#license">License</a></h1>
 <p>MPL. See <a href="https://github.com/badboy/mdbook-last-changed/blob/main/LICENSE">LICENSE</a>.<br />
 Copyright (c) 2022 Jan-Erik Rediger <a href="mailto:janerik@fnordig.de">janerik@fnordig.de</a></p>
-<footer id="last-change">Last change: 2023-04-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/9660612">9660612</a></footer>
+<footer id="last-change">Last change: 2023-07-11, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/bc6e40e">bc6e40e</a></footer>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
