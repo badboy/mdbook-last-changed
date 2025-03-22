@@ -95,18 +95,16 @@ fn last_changed(
 
     let modification = get_last_modification(git_root, &path);
     let text = match modification {
-        Ok((date, commit)) => match base_url {
-            Some(url) => {
-                let url = format!("{}/commit/{}", url, commit);
-                format!(
-                    "Last change: {}, commit: <a href=\"{}\">{}</a>",
-                    date, url, commit
-                )
+        Ok((date, commit)) => {
+            let time = format!("<time datetime=\"{date}\">{date}</time>");
+            match base_url {
+                Some(url) => {
+                    let url = format!("{url}/commit/{commit}");
+                    format!("Last change: {time}, commit: <a href=\"{url}\">{commit}</a>")
+                }
+                None => format!("Last change: {time}"),
             }
-            None => {
-                format!("Last change: {}", date)
-            }
-        },
+        }
         Err(e) => {
             log::trace!("No modification found for {path:?}. Error: {e:?}");
             return Ok(content.into());

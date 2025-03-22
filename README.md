@@ -43,12 +43,12 @@ If `git-repository-url` is not configured the footer will not contain the commit
 
 Without `git-repository-url` configured:
 ```HTML
-<footer id="last-change">Last change: 2023-07-09</footer>
+<footer id="last-change">Last change: <time datetime="2023-07-09">2023-07-09</time></footer>
 ```
 
 With `git-repository-url` configured:
 ```HTML
-<footer id="last-change">Last change: 2023-07-09, commit: <a href="https://github.com/$user/$project/commit/$commit">0000000</a></footer>
+<footer id="last-change">Last change: <time datetime="2023-07-09">2023-07-09</time>, commit: <a href="https://github.com/$user/$project/commit/$commit">0000000</a></footer>
 ```
 
 To style the footer add a custom CSS file for your HTML output:
