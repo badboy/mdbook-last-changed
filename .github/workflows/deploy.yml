@@ -113,7 +113,7 @@ jobs:
           git log -1 --pretty='%s' > RELEASE.md
 
       - name: Build | Publish
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ${{ env.CRATE_NAME }}-*/${{ env.CRATE_NAME }}-*
           body_path: RELEASE.md
