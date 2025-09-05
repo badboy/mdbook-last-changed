@@ -34,6 +34,18 @@ impl Preprocessor for LastChanged {
             None => None,
         };
 
+        let commit_url_base: Option<String> = match ctx.config.get("output.html.git-commit-url") {
+            Some(toml::Value::String(url)) => {
+                log::debug!("Commit URL: {}", url);
+                Some(url.to_string())
+            }
+            Some(toml::Value::Boolean(false)) => None,
+            _ => match repository_string {
+                Some(url) => Some(format!("{}/commit/", url)),
+                None => None,
+            },
+        };
+
         let mut res = None;
         book.for_each_mut(|item: &mut BookItem| {
             if let Some(Err(_)) = res {
@@ -43,9 +55,11 @@ impl Preprocessor for LastChanged {
 
             if let BookItem::Chapter(ref mut chapter) = *item {
                 res = Some(
-                    last_changed(&git_root, &src_root, repository_string, chapter).map(|md| {
-                        chapter.content = md;
-                    }),
+                    last_changed(&git_root, &src_root, commit_url_base.as_deref(), chapter).map(
+                        |md| {
+                            chapter.content = md;
+                        },
+                    ),
                 );
             }
         });
@@ -57,7 +71,7 @@ impl Preprocessor for LastChanged {
 fn last_changed(
     git_root: &Path,
     src_root: &Path,
-    base_url: Option<&str>,
+    commit_url_base: Option<&str>,
     chapter: &mut Chapter,
 ) -> Result<String> {
     let content = &chapter.content;
@@ -88,9 +102,9 @@ fn last_changed(
     let text = match modification {
         Ok((date, commit)) => {
             let time = format!("<time datetime=\"{date}\">{date}</time>");
-            match base_url {
+            match commit_url_base {
                 Some(url) => {
-                    let url = format!("{url}/commit/{commit}");
+                    let url = format!("{url}{commit}");
                     format!("Last change: {time}, commit: <a href=\"{url}\">{commit}</a>")
                 }
                 None => format!("Last change: {time}"),

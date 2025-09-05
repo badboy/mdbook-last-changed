@@ -39,14 +39,19 @@ renderer = ["html"]
 git-repository-url = "https://github.com/$user/$project"
 ```
 
-If `git-repository-url` is not configured the footer will not contain the commit and a link to it and instead only show the last changed date.
+* If `git-repository-url` is not configured the footer will not contain the commit and a link to it and instead only show the last changed date.
+* The commit URL is constructed as `<git-repository-url>/commit/<commit-id>` where `<git-repository-url>` is the configured URL and `<commit-id>` is the commit ID fetched from the local repository.
+* If the commit URL pattern is different you can set `output.html.git-commit-url` to any URL. The commit ID will be appended to that URL.
+* If you want to disable adding the link set `output.html.git-commit-url = false`.
 
 Without `git-repository-url` configured:
+
 ```HTML
 <footer id="last-change">Last change: <time datetime="2023-07-09">2023-07-09</time></footer>
 ```
 
 With `git-repository-url` configured:
+
 ```HTML
 <footer id="last-change">Last change: <time datetime="2023-07-09">2023-07-09</time>, commit: <a href="https://github.com/$user/$project/commit/$commit">0000000</a></footer>
 ```
@@ -82,4 +87,4 @@ mdbook path/to/book
 ## License
 
 MPL. See [LICENSE](LICENSE).  
-Copyright (c) 2022 Jan-Erik Rediger <janerik@fnordig.de>
+Copyright (c) 2022-2025 Jan-Erik Rediger <janerik@fnordig.de>
