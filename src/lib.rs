@@ -23,22 +23,13 @@ impl Preprocessor for LastChanged {
 
         let repository_string: Option<&str> = match ctx.config.get("output.html.git-repository-url")
         {
-            Some(val) => {
-                let url = match val {
-                    toml::Value::String(s) => s,
-                    _ => {
-                        log::trace!("git-repository-url is not a string: {val:?}");
-                        return Ok(book);
-                    }
-                };
+            Some(toml::Value::String(url)) => {
                 log::debug!("Repository URL: {}", url);
-
-                if !url.contains("github.com") {
-                    log::trace!("git-repository-url is not a GitHub URL: {url:?}");
-                    return Ok(book);
-                }
-
                 Some(&url)
+            }
+            Some(val) => {
+                log::trace!("git-repository-url is not a string: {val:?}");
+                None
             }
             None => None,
         };
