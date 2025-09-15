@@ -67,7 +67,7 @@ jobs:
 
       - name: Post Setup | Extract tag name
         shell: bash
-        run: echo "tag=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_STATE
+        run: echo "tag=$(echo ${GITHUB_REF#refs/tags/})" >> "$GITHUB_OUTPUT"
         id: extract_tag
 
       - name: Post Setup | Prepare artifacts [Windows]
@@ -76,7 +76,7 @@ jobs:
           mkdir target/stage
           cd target/${{ matrix.target }}/release
           strip ${{ env.CRATE_NAME }}.exe
-          7z a ../../stage/${{ env.CRATE_NAME }}-${{ env.STATE_tag }}-${{ matrix.name }} ${{ env.CRATE_NAME }}.exe
+          7z a ../../stage/${{ env.CRATE_NAME }}-${{ steps.extract_tag.output.tag }}-${{ matrix.name }} ${{ env.CRATE_NAME }}.exe
           cd -
 
       - name: Post Setup | Prepare artifacts [-nix]
@@ -85,7 +85,7 @@ jobs:
           mkdir target/stage
           cd target/${{ matrix.target }}/release
           strip ${{ env.CRATE_NAME }}
-          tar czvf ../../stage/${{ env.CRATE_NAME }}-${{ env.STATE_tag }}-${{ matrix.name }} ${{ env.CRATE_NAME }}
+          tar czvf ../../stage/${{ env.CRATE_NAME }}-${{ steps.extract_tag.output.tag }}-${{ matrix.name }} ${{ env.CRATE_NAME }}
           cd -
 
       - name: Post Setup | Upload artifacts
