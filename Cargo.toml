@@ -8,7 +8,7 @@ repository = "https://github.com/badboy/mdbook-last-changed"
 edition = "2021"
 
 [dependencies]
-mdbook = "0.4.33"
+mdbook-preprocessor = "0.5.0"
 env_logger = "0.11.8"
 log = "0.4"
 clap = { version = "4.0.29", features = ["cargo"] }

@@ -1,9 +1,9 @@
 use std::path::{Path, PathBuf};
 
-use mdbook::book::{Book, BookItem, Chapter};
-use mdbook::errors::Result;
-use mdbook::preprocess::{Preprocessor, PreprocessorContext};
-use xshell::{cmd, Shell};
+use mdbook_preprocessor::book::{Book, BookItem, Chapter};
+use mdbook_preprocessor::errors::Result;
+use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
+use xshell::{Shell, cmd};
 
 pub struct LastChanged;
 
@@ -21,20 +21,20 @@ impl Preprocessor for LastChanged {
         log::debug!("Src root: {}", src_root.display());
         log::debug!("Git root: {}", git_root.display());
 
-        let repository_string: Option<&str> = match ctx.config.get("output.html.git-repository-url")
-        {
-            Some(toml::Value::String(url)) => {
-                log::debug!("Repository URL: {}", url);
-                Some(&url)
-            }
-            Some(val) => {
-                log::trace!("git-repository-url is not a string: {val:?}");
-                None
-            }
-            None => None,
-        };
+        let repository_string: Option<String> =
+            match ctx.config.get("output.html.git-repository-url")? {
+                Some(toml::Value::String(url)) => {
+                    log::debug!("Repository URL: {}", url);
+                    Some(url)
+                }
+                Some(val) => {
+                    log::trace!("git-repository-url is not a string: {val:?}");
+                    None
+                }
+                None => None,
+            };
 
-        let commit_url_base: Option<String> = match ctx.config.get("output.html.git-commit-url") {
+        let commit_url_base: Option<String> = match ctx.config.get("output.html.git-commit-url")? {
             Some(toml::Value::String(url)) => {
                 log::debug!("Commit URL: {}", url);
                 Some(url.to_string())
