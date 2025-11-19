@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use mdbook_preprocessor::book::{Book, BookItem, Chapter};
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
-use xshell::{Shell, cmd};
+use xshell::{cmd, Shell};
 
 pub struct LastChanged;
 

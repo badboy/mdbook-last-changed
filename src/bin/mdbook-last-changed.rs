@@ -1,7 +1,7 @@
-use clap::{Arg, ArgMatches, Command, crate_version};
+use clap::{crate_version, Arg, ArgMatches, Command};
 use mdbook_last_changed::LastChanged;
-use mdbook_preprocessor::Preprocessor;
 use mdbook_preprocessor::errors::Error;
+use mdbook_preprocessor::Preprocessor;
 
 use std::io;
 use std::process;
