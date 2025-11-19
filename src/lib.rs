@@ -42,10 +42,7 @@ impl Preprocessor for LastChanged {
                 Some(url.to_string())
             }
             Some(toml::Value::Boolean(false)) => None,
-            _ => match repository_string {
-                Some(url) => Some(format!("{}/commit/", url)),
-                None => None,
-            },
+            _ => repository_string.map(|url| format!("{}/commit/", url)),
         };
 
         let mut res = None;
@@ -91,7 +88,7 @@ fn last_changed(
         }
         Some(path) => path,
     };
-    let path = match src_root.join(&path).canonicalize() {
+    let path = match src_root.join(path).canonicalize() {
         Ok(path) => path,
         Err(_) => {
             log::trace!("Cannot canonicalize path: {path:?}");
@@ -130,10 +127,7 @@ fn find_git(path: &Path) -> Option<PathBuf> {
     let root = Path::new("/");
 
     while !git_dir.exists() {
-        current_path = match current_path.parent() {
-            Some(p) => p,
-            None => return None,
-        };
+        current_path = current_path.parent()?;
 
         if current_path == root {
             return None;
