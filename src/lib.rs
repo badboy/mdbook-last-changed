@@ -13,6 +13,8 @@ impl Preprocessor for LastChanged {
     }
 
     fn run(&self, ctx: &PreprocessorContext, mut book: Book) -> Result<Book> {
+        let cfg_attr = |attr| format!("preprocessor.{}.{}", self.name(), attr);
+
         let book_root = &ctx.root;
         let src_root = book_root.join(&ctx.config.book.src);
         let git_root = find_git(book_root)
@@ -34,7 +36,7 @@ impl Preprocessor for LastChanged {
                 None => None,
             };
 
-        let commit_url_base: Option<String> = match ctx.config.get("output.html.git-commit-url")? {
+        let commit_url_base: Option<String> = match ctx.config.get(&cfg_attr("git-commit-url"))? {
             Some(toml::Value::String(url)) => {
                 log::debug!("Commit URL: {}", url);
                 Some(url.to_string())

@@ -1,18 +1,22 @@
 # Configuration
 
-`mdbook-last-changed` is configured using additional options under `[output.html]`:
+`mdbook-last-changed` is configured using additional options under `[output.html]` and `[preprocessor.last-chagned]`:
 
 
 ```toml
 [output.html]
 # Required: Your repository URL used in the link.
 git-repository-url = "https://github.com/$user/$project"
+
+[preprocessor.last-changed]
+# git-commit-url = false # Disable linking to it
+# git-commit-url = "https://git.example.com/user/project/commit/" # A custom URL, different from the repository URL
 ```
 
 * If `git-repository-url` is not configured the footer will not contain the commit and a link to it and instead only show the last changed date.
 * The commit URL is constructed as `<git-repository-url>/commit/<commit-id>` where `<git-repository-url>` is the configured URL and `<commit-id>` is the commit ID fetched from the local repository.
-* If the commit URL pattern is different you can set `output.html.git-commit-url` to any URL. The commit ID will be appended to that URL.
-* If you want to disable adding the link set `output.html.git-commit-url = false`.
+* If the commit URL pattern is different you can set `preprocessor.last-changed.git-commit-url` to any URL. The commit ID will be appended to that URL.
+* If you want to disable adding the link set `preprocessor.last-changed.git-commit-url = false`.
 
 Without `git-repository-url` configured:
 
