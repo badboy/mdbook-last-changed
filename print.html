@@ -37,7 +37,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b57fbac3.js";
+            window.path_to_searchindex_js = "searchindex-23e42ec7.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-9db9db33.js"></script>
@@ -190,7 +190,7 @@ It uses the configured <code>git-repository-url</code> as the base.</p>
 <li>A configured git repository url in your <code>book.toml</code> configuration. See <a href="#configuration">Configuration</a>.</li>
 <li>Access to the git repository checkout while building your book.</li>
 </ul>
-<footer id="last-change">Last change: <time datetime="2025-11-18">2025-11-18</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/ce3c57a">ce3c57a</a></footer><div style="break-before: page; page-break-before: always;"></div>
+<footer id="last-change">Last change: <time datetime="2025-11-19">2025-11-19</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/409a73f">409a73f</a></footer><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>If you want to use only this preprocessor, install the tool:</p>
 <pre><code>cargo install mdbook-last-changed
@@ -200,18 +200,22 @@ It uses the configured <code>git-repository-url</code> as the base.</p>
 command = "mdbook-last-changed"
 renderer = ["html"]
 </code></pre>
-<footer id="last-change-1">Last change: <time datetime="2025-11-18">2025-11-18</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/ce3c57a">ce3c57a</a></footer><div style="break-before: page; page-break-before: always;"></div>
+<footer id="last-change-1">Last change: <time datetime="2025-11-19">2025-11-19</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/409a73f">409a73f</a></footer><div style="break-before: page; page-break-before: always;"></div>
 <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
-<p><code>mdbook-last-changed</code> is configured using additional options under <code>[output.html]</code>:</p>
+<p><code>mdbook-last-changed</code> is configured using additional options under <code>[output.html]</code> and <code>[preprocessor.last-chagned]</code>:</p>
 <pre><code class="language-toml">[output.html]
 # Required: Your repository URL used in the link.
 git-repository-url = "https://github.com/$user/$project"
+
+[preprocessor.last-changed]
+# git-commit-url = false # Disable linking to it
+# git-commit-url = "https://git.example.com/user/project/commit/" # A custom URL, different from the repository URL
 </code></pre>
 <ul>
 <li>If <code>git-repository-url</code> is not configured the footer will not contain the commit and a link to it and instead only show the last changed date.</li>
 <li>The commit URL is constructed as <code>&lt;git-repository-url&gt;/commit/&lt;commit-id&gt;</code> where <code>&lt;git-repository-url&gt;</code> is the configured URL and <code>&lt;commit-id&gt;</code> is the commit ID fetched from the local repository.</li>
-<li>If the commit URL pattern is different you can set <code>output.html.git-commit-url</code> to any URL. The commit ID will be appended to that URL.</li>
-<li>If you want to disable adding the link set <code>output.html.git-commit-url = false</code>.</li>
+<li>If the commit URL pattern is different you can set <code>preprocessor.last-changed.git-commit-url</code> to any URL. The commit ID will be appended to that URL.</li>
+<li>If you want to disable adding the link set <code>preprocessor.last-changed.git-commit-url = false</code>.</li>
 </ul>
 <p>Without <code>git-repository-url</code> configured:</p>
 <pre><code class="language-HTML">&lt;footer id="last-change"&gt;Last change: &lt;time datetime="2023-07-09"&gt;2023-07-09&lt;/time&gt;&lt;/footer&gt;
@@ -239,7 +243,7 @@ and adds a small horizontal bar above the text to separate it from the page cont
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="license"><a class="header" href="#license">License</a></h1>
 <p>MPL. See <a href="https://github.com/badboy/mdbook-last-changed/blob/main/LICENSE">LICENSE</a>.<br>Copyright (c) 2022-2025 Jan-Erik Rediger <a href="mailto:janerik@fnordig.de">janerik@fnordig.de</a></p>
-<footer id="last-change-2">Last change: <time datetime="2025-11-18">2025-11-18</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/ce3c57a">ce3c57a</a></footer>
+<footer id="last-change-2">Last change: <time datetime="2025-11-19">2025-11-19</time>, commit: <a href="https://github.com/badboy/mdbook-last-changed/commit/409a73f">409a73f</a></footer>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
